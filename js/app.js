@@ -23,12 +23,61 @@ let stores = {
   paris: new Store(20, 38, 2.3),
   lima: new Store(2, 16, 4.6),
 };
+const times = [
+  " ",
+  "6am",
+  "7am",
+  "8am",
+  "9am",
+  "10am",
+  "11am",
+  "12pm",
+  "1pm",
+  "2pm",
+  "3pm",
+  "4pm",
+  "5pm",
+  "6pm",
+  "	Daily Location Total ",
+];
+// https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Traversing_an_HTML_table_with_JavaScript_and_DOM_Interfaces
+
+let tbl = document.createElement("table");
+let headerRow = document.createElement("tr");
+let tblBody = document.createElement("tbody");
+
+for (const i in times) {
+  let theadCell = document.createElement("td");
+  let theadCellText = document.createTextNode(`${times[i]}`);
+  theadCell.appendChild(theadCellText);
+  headerRow.appendChild(theadCell);
+  tbl.appendChild(headerRow);
+}
+tbl.appendChild(headerRow);
 
 for (const store in stores) {
-  document
-    .getElementById("storeResults")
-    .appendChild(makeUL(store, stores[store]));
+  let row = document.createElement("tr");
+  let storeCell = document.createElement("td");
+  let storeCellText = document.createTextNode(`${store}`);
+  storeCell.appendChild(storeCellText);
+  row.appendChild(storeCell);
+
+  for (let t = 0; t < stores[store].data.length; t++) {
+    let cell = document.createElement("td");
+    let cellText = document.createTextNode(`${stores[store].data[t]}`);
+    cell.appendChild(cellText);
+    row.appendChild(cell);
+  }
+  let totalCell = document.createElement("td");
+  let cellTotal = document.createTextNode(`${stores[store].total}`);
+  totalCell.appendChild(cellTotal);
+  row.appendChild(totalCell);
+  tbl.appendChild(row);
 }
+
+tbl.appendChild(tblBody);
+tbl.setAttribute("border", "2");
+document.getElementById("storeResults").appendChild(tbl);
 
 function makeUL(name, store) {
   // https://stackoverflow.com/questions/11128700/create-a-ul-and-fill-it-based-on-a-passed-array
@@ -40,21 +89,7 @@ function makeUL(name, store) {
   for (let i = 0; i < store.data.length; i++) {
     // Create the list item:
     let item = document.createElement("li");
-    let time = [
-      "6am",
-      "7am",
-      "8am",
-      "9am",
-      "10am",
-      "11am",
-      "12pm",
-      "1pm",
-      "2pm",
-      "3pm",
-      "4pm",
-      "5pm",
-      "6pm",
-    ];
+
     // Set its contents:
     item.appendChild(
       document.createTextNode(`${time[i]}; ${store.data[i]} cookies sold `)
@@ -70,6 +105,7 @@ function makeUL(name, store) {
   // Finally, return the constructed list:
   return div;
 }
+
 /*
 Location	Min / Cust	Max / Cust	Avg Cookie / Sale
 Seattle	23	65	6.3
